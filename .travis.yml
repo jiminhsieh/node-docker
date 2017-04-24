@@ -1,11 +1,35 @@
 sudo: required
 
-services:
-    - docker
-
-script:
-    - ./test-build.sh $NODE_VERSION
+language: bash
+services: docker
 
 env:
-    matrix :
-        - NODE_VERSION: '6.10'
+  - VERSION=7 TAG_1=7.9 TAG_2=7.9.0 TAG_3=latest
+  - VERSION=4 TAG_1=4.8 TAG_2=4.8.2 TAG_3=argon
+
+install:
+  - git clone https://github.com/docker-library/official-images.git ~/official-images
+
+before_script:
+  - env | sort
+  - cd "${VERSION}${VARIANT:+/$VARIANT}"
+  - IMAGE_REPOSITORY="${DOCKER_HUB_USERNAME}/node"
+  - image="${IMAGE_REPOSITORY}:${VERSION}${VARIANT:+-$VARIANT}"
+
+script:
+  - travis_retry docker build -t "$image" .
+  - ~/official-images/test/run.sh "$image"
+
+after_success:
+  - if [ "$TAG_1" != "" ]; then docker tag "${image}" "$IMAGE_REPOSITORY:${TAG_1}" ; fi
+  - if [ "$TAG_2" != "" ]; then docker tag "${image}" "$IMAGE_REPOSITORY:${TAG_2}" ; fi
+  - if [ "$TAG_3" != "" ]; then docker tag "${image}" "$IMAGE_REPOSITORY:${TAG_3}" ; fi
+  - if [ "$TAG_4" != "" ]; then docker tag "${image}" "$IMAGE_REPOSITORY:${TAG_4}" ; fi
+  - docker images
+  - docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}
+  - docker push ${IMAGE_REPOSITORY}
+
+script:
+    - ./test-build.sh ${VERSION}
+
+
