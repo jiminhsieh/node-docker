@@ -26,10 +26,10 @@ after_success:
   - if [ "$TAG_3" != "" ]; then docker tag "${image}" "$IMAGE_REPOSITORY:${TAG_3}" ; fi
   - if [ "$TAG_4" != "" ]; then docker tag "${image}" "$IMAGE_REPOSITORY:${TAG_4}" ; fi
   - docker images
+  - ./test-build.sh ${VERSION}
   - docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}
   - docker push ${IMAGE_REPOSITORY}
 
-script:
-    - ./test-build.sh ${VERSION}
+
 
 
