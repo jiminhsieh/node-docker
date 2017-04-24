@@ -4,8 +4,8 @@ language: bash
 services: docker
 
 env:
-  - VERSION=7 TAG_1=7.9 TAG_2=7.9.0 TAG_3=latest
-  - VERSION=4 TAG_1=4.8 TAG_2=4.8.2 TAG_3=argon
+  - VERSION=6.10  TAG_1=6 TAG_2=6.10.2  TAG_3=boron TAG_4=latest
+  - VERSION=4.8   TAG_1=4 TAG_2=4.8.2   TAG_3=argon
 
 install:
   - git clone https://github.com/docker-library/official-images.git ~/official-images
